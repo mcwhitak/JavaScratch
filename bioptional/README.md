@@ -1,5 +1,5 @@
 # BiOptional
-BiOptional composes two optional elements into a single monad, exposing operations that will be executed if and only if both elements are present.
+BiOptional composes two optional elements into a single monad, exposing operations that will be executed only if both elements are present.
 
 ### Problem
 One of the most common ways in which programmers must work outside of the `Optional` construct in java is when evaluting the combined existence of two objects. Current solutions include nested flatmaps and reverting to traditional conditional semantics for evaluting and executing.
@@ -10,7 +10,7 @@ Optional<String> a;
 Optional<String> b;
 
 -- FUNCTION --
-// If and only if both a and b are present, return  "${a} ${b}" else return "UNKNOWN"
+// If both a and b are present, return  "${a} ${b}" else return "UNKNOWN"
 
 -- Flatmap Form --
 return a.flatMap(aVal -> b.map(bVal -> aVal + " " + bVal))
@@ -40,7 +40,7 @@ Optional<String> a;
 Optional<String> b;
 
 -- FUNCTION --
-// If and only if both a and b are present, return  "${a} ${b}" else return "UNKNOWN"
+// If both a and b are present, return  "${a} ${b}" else return "UNKNOWN"
 
 -- BiOptional Form --
 return BiOptional.from(a, b)
