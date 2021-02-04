@@ -37,9 +37,7 @@ public class Either<T, S> {
   }
 
   public <X, Y> Either<X, Y> flatMap(Function<T, Either<X, Y>> leftFunction, Function<S, Either<X, Y>> rightFunction) {
-    return mapLeft(leftFunction)
-      .or(() -> mapRight(rightFunction))
-      .orElseThrow();
+    return mapLeftOrRight(leftFunction, rightFunction);
   }
 
   public void ifLeft(Consumer<T> leftConsumer) {
