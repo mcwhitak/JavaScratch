@@ -22,28 +22,23 @@ public class Either<T, S> {
     return new Either(null, right);
   }
 
-  public Optional<T> getLeft() {
-    return Optional.ofNullable(left);
-  }
-
-  public Optional<S> getRight() {
-    return Optional.ofNullable(right);
-  }
-
-  public <Y> Optional<Y> mapLeft(Function<T, Y> mapFunction) {
-    return getLeft()
-      .map(mapFunction);
-  }
-
-  public <X> Optional<X> mapRight(Function<S, X> mapFunction) {
-    return getRight()
-      .map(mapFunction);
-  }
-
   public <X> X mapLeftOrRight(Function<T, X> leftFunction, Function<S, X> rightFunction) {
-    return getLeft()
-      .map(leftFunction)
-      .or(() -> getRight().map(rightFunction))
+    return mapLeft(leftFunction)
+      .or(() -> mapRight(rightFunction))
+      .orElseThrow();
+  }
+
+  public <X, Y> Either<X, Y> map(Function<T, X> leftFunction, Function<S, Y> rightFunction) {
+    return mapLeft(leftFunction)
+      .<Either<X, Y>>map(Either::ofLeft)
+      .or(() -> mapRight(rightFunction)
+          .map(Either::ofRight))
+      .orElseThrow();
+  }
+
+  public <X, Y> Either<X, Y> flatMap(Function<T, Either<X, Y>> leftFunction, Function<S, Either<X, Y>> rightFunction) {
+    return mapLeft(leftFunction)
+      .or(() -> mapRight(rightFunction))
       .orElseThrow();
   }
 
@@ -58,5 +53,23 @@ public class Either<T, S> {
   public void ifLeftOrRight(Consumer<T> leftConsumer, Consumer<S> rightConsumer) {
     ifLeft(leftConsumer);
     ifRight(rightConsumer);
+  }
+
+  private Optional<T> getLeft() {
+    return Optional.ofNullable(left);
+  }
+
+  private Optional<S> getRight() {
+    return Optional.ofNullable(right);
+  }
+
+  private <Y> Optional<Y> mapLeft(Function<T, Y> mapFunction) {
+    return getLeft()
+      .map(mapFunction);
+  }
+
+  private <X> Optional<X> mapRight(Function<S, X> mapFunction) {
+    return getRight()
+      .map(mapFunction);
   }
 }
